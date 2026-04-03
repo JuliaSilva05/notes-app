@@ -8,8 +8,21 @@ function App() {
 
   const [editing, setEditing] = useState(null)
 
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/notes")
+        const notes = await response.json()
+        setNotes(notes)
+      } catch (e){
+        console.log(e)
+      }
+    }
+    fetchNotes()
+  }, [])
+
   const handleEdit = (note) => {
-    setEditing(note)
+    setEditing(note.id)
     setTitle(note.title)
     setContent(note.content)
   }
@@ -20,34 +33,53 @@ function App() {
     setEditing(null)
   }
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault()
-    if (editing) {
-      const updatedNotes = {
-        id: editing.id,
-        title: title,
-        content: content,
-        createdAt: editing.createdAt,
+    if (editing){
+      try{
+        const response = await fetch(`http://localhost:3000/api/notes/${editing}`, {
+          method: "PUT",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({title, content}),
+        })
+        const updatedNote = await response.json()
+        setNotes(notes.map((n) => (n.id === updatedNote.id ? updatedNote : n)))
+      }catch{
+        console.log(e)
       }
-      setNotes(notes.map((note) => note.id === editing.id ? updatedNotes : note))
       setEditing(null)
-    } else {
-      const newNote = {
-        id: notes.length + 1,
-        title: title,
-        content: content,
-        createdAt: new Date().toLocaleDateString(),
+    }
+    else {
+      try{
+        const response = await fetch("http://localhost:3000/api/notes", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({title, content}),
+        })
+        const newNote = await response.json()
+        setNotes([newNote, ...notes])
+      }catch{
+        console.log(e)
       }
-      setNotes([newNote, ...notes])
     }
     setTitle("")
     setContent("")
   }
 
-  const handleDelete = (e, id) => {
+
+  const handleDelete = async (e, id) => {
     e.stopPropagation()
-    const updatedNotes = notes.filter((note) => note.id !== id)
-    setNotes(updatedNotes)
+    try {
+      if (window.confirm("Are you sure you want to delete this note?")){
+        await fetch(`http://localhost:3000/api/notes/${id}`, {
+          method: "DELETE",
+        })
+        const updatedNotes = notes.filter((note) => note.id !== id)
+        setNotes(updatedNotes)
+      }
+    } catch {
+      console.log(e)
+    }
   }
   
   return (
@@ -86,7 +118,7 @@ function App() {
             <p>{note.content}</p>
           </div>
           <div className='note-buttons'>
-            <p>{note.createdAt}</p>
+            <p>{note.createdAt.split("T")[0]}</p>
             <button className='btn-note' onClick={() => handleEdit(note)}>Edit</button>
             <button className='btn-note' onClick={(e) => handleDelete(e, note.id)}>Delete</button>
           </div>
