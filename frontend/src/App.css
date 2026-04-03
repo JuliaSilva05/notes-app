@@ -1,3 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: blueviolet;
+  color: white;
+}
+
+.note {
+  text-align: left;
+  background-color: white;
+  color: black;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);  
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.note-form input, textarea {
+  border-radius: 8px;
+}
+
+.note-buttons {
+  display: flex;
+  padding-top: 8px;
+  gap: 8px;
+}
+
+
+
+.btn-header {
+  background-color: white;
+  color: blueviolet;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-note {
+  background-color: blueviolet;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
 
 
 
