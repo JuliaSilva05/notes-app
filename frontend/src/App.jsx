@@ -25,6 +25,7 @@ function App() {
     setEditing(note.id)
     setTitle(note.title)
     setContent(note.content)
+    document.getElementById("form").scrollIntoView({behavior: "smooth"})
   }
 
   const handleCancel = () => {
@@ -44,6 +45,7 @@ function App() {
         })
         const updatedNote = await response.json()
         setNotes(notes.map((n) => (n.id === updatedNote.id ? updatedNote : n)))
+        document.getElementById(updatedNote.id).scrollIntoView({behavior: "smooth"})
       }catch{
         console.log(e)
       }
@@ -57,7 +59,7 @@ function App() {
           body: JSON.stringify({title, content}),
         })
         const newNote = await response.json()
-        setNotes([newNote, ...notes])
+        setNotes([...notes, newNote])
       }catch{
         console.log(e)
       }
@@ -88,7 +90,7 @@ function App() {
         <h1>Notes App</h1>
       </div>
       
-      <form className='note' onSubmit={handleAdd}>
+      <form id='form' className='note' onSubmit={handleAdd}>
         <div className='note-form'>
           <input 
             type='text' 
@@ -104,21 +106,22 @@ function App() {
             required/>
         </div>
         <div className='note-buttons'>
-          <button type='submit' className='btn-note'>Save</button>
+          <button type='submit' className='btn-note'>{ editing ? "Update":"Add" }</button>
           <button className='btn-note' onClick={handleCancel}>Cancel</button>
         </div>
       </form>
 
       
       {notes.map((note) => (
-        <div className='note' key={note.id}>
+        <div id={note.id} className='note' key={note.id}>
           <div>
             <h2>{note.title}</h2>
-            <line/>
             <p>{note.content}</p>
           </div>
           <div className='note-buttons'>
-            <p>{note.createdAt.split("T")[0]}</p>
+            <small>
+              <p className='date'>{note.createdAt.split("T")[0]}</p>
+            </small>
             <button className='btn-note' onClick={() => handleEdit(note)}>Edit</button>
             <button className='btn-note' onClick={(e) => handleDelete(e, note.id)}>Delete</button>
           </div>

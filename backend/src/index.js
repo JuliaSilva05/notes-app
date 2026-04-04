@@ -1,13 +1,9 @@
 import express from 'express'
 import cors from 'cors'
-//import { PrismaClient } from './generated/prisma/index.js'
 import { PrismaClient } from '@prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-//import dotenv from 'dotenv'
 
 const app = express()
-//dotenv.config({path: '../.env'})
-//console.log(process.env.DATABASE_URL)
 
 const adapter = new PrismaMariaDb({
     host: 'localhost',
